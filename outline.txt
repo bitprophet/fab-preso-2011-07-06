@@ -1,0 +1,37 @@
+# Fabric 1.x
+## What's here now & what's coming up
+
+* Intro
+    * About Me
+        * Ops & dev
+        * 
+    * About Fabric
+    * Who uses/has heard of/etc Fabric
+    * What this talk is about
+* Features you may have missed
+    * 0.9.2
+        * Package fabfiles
+        * Lazy roledefs
+        * Arbitrary remote shell commands
+    * 1.0
+        * Interactivity
+        * put/get: sudo capable, globbing, file-like objs
+    * 1.1
+        * namespaces, @task
+        * exclude\_hosts
+* Where we're going
+    * Faster, smaller releases
+    * Namespace/task improvements
+        * Aliases
+        * Default tasks
+        * Specify wrapper class in @task
+    * Parallel execution & UI improvements
+        * Morgan's multiprocessing branch
+        * Logging
+        * Prefix customization
+        * Colorizing output by default
+    * SSH & networking improvements
+        * Skip over unreachable hosts
+        * Timeout control
+        * ProxyCommand support via paraproxy
+        * ssh to localhost => local()
