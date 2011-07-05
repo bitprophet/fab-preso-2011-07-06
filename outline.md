@@ -6,10 +6,10 @@
 
 ## Jeff Forcier
 
-* Author of *Python Web Development with Django* (2008 / Django 1.0)
-* Fabric contributor since 2008 / v0.1, maintainer since 2009 / v0.9
 * Python/Ruby dev, Linux sysadmin
 * Whiskey Media ops engineer
+* Author of *Python Web Development with Django* (2008 / Django 1.0)
+* Fabric contributor since 2008 / v0.1, maintainer since 2009 / v0.9
 
 ---
 
@@ -73,43 +73,129 @@ Execution:
 
 ---
 
-# What's this talk about?
+# The past
 
 ---
 
-# Features you may have missed
+# (Stuff you might have missed)
 
 ---
 
-## 0.9.2
-### Package fabfiles
-### Lazy roledefs
-### Arbitrary remote shell commands
-## 1.0
-### Interactivity
-### put/get: sudo capable, globbing, file-like objs
-## 1.1
-### namespaces, @task
-### exclude\_hosts
+# Fabric 0.9.2 (2010-09)
+
+---
+
+# Package fabfiles
+
+Filesystem:
+
+    fabfile
+    ├── __init__.py
+    ├── submodule1.py
+    └── submodule2.py
+
+Contents of `fabfile/__init__.py`:
+
+    !python
+    from submodule1 import task2, task3
+    from submodule2 import task4
+
+    def task1():
+        pass
+
+Result:
+
+    /folder/containing/fabfile/directory $ fab --list
+
+    Available commands:
+
+        task1
+        task2
+        task3
+        task4
+
+---
+
+# Lazy roledefs
+
+`fabfile.py`:
+
+    !python
+    import requests
+    from fabric.api import env, run
+
+    def _role(name):
+        uri = "http://my/catalog/?role=%s" % name
+        return requests.get(uri).content.splitlines()
+
+    env.roledefs = {
+        'web': lambda: _role('web'),
+        'db': lambda: _role('database')
+    }
+
+    def mytask():
+        ...
+
+Execution:
+
+    $ fab --role=web mytask
+    # Looks up 'web' hosts only -- 1 HTTP request, not 2
+
+---
+
+# Arbitrary remote shell commands
+
+---
+
+# Fabric 1.0 (2011-03)
+
+* Interactivity
+* put/get: sudo capable, globbing, file-like objs
+
+---
+
+# The present
+
+---
+
+# Fabric 1.1 (2011-06)
+
+* namespaces, @task
+* exclude\_hosts
 
 ---
 
 # Where we're going
-## Faster, smaller releases
-## Namespace/task improvements
-### Aliases
-### Default tasks
-### Specify wrapper class in @task
-## Parallel execution & UI improvements
-### Morgan's multiprocessing branch
-### Logging
-### Prefix customization
-### Colorizing output by default
-## SSH & networking improvements
-### Skip over unreachable hosts
-### Timeout control
-### ProxyCommand support via paraproxy
-### ssh to localhost => local()
+
+---
+
+# (Faster, smaller releases!)
+
+---
+
+# Namespace/task improvements
+
+* Aliases
+* Default tasks
+* Specify wrapper class in @task
+
+---
+
+# Parallel execution, logging & UI
+
+* Morgan's multiprocessing branch
+* Logging
+* Prefix customization
+* Colorizing output by default
+
+---
+
+# Better SSH & networking behavior
+
+* Skip over unreachable hosts
+* Timeout control
+* ProxyCommand support via paraproxy
+* ssh to localhost => local()
 
 ---
 
@@ -120,6 +206,7 @@ Execution:
 * **Presentation tool:** Landslide (`https://github.com/adamzap/landslide`)
 * **Fabric:** `http://fabfile.org`
 * **Changelogs:** `http://docs.fabfile.org/#changes-from-previous-versions`
+* **Issues:** `http://code.fabfile.org` (soon: Github Issues)
 
 ## Contact
 

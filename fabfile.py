@@ -10,3 +10,20 @@ def stereotype():
         puts("Gross, a neckbeard :(")
     elif os_type == "Darwin":
         puts("Hipster spotted!")
+
+
+
+import requests
+from fabric.api import env, run
+
+def _fetch_role(name):
+    uri = "http://my/catalog/?role=%s" % name
+    return requests.get(uri).content.splitlines()
+
+env.roledefs = {
+    'web': lambda: _fetch_role('web'),
+    'db': lambda: _role('database')
+}
+
+def mytask():
+    run("command")
