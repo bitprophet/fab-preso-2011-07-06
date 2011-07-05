@@ -145,12 +145,46 @@ Execution:
 
 # Arbitrary remote shell commands
 
+Running the following:
+
+    $ fab -H server -- rm /srv/rails/myapp/current/log/production.log
+
+is directly equivalent to:
+
+    def anonymous():
+        run("rm /srv/rails/myapp/current/log/production.log")
+
+followed by:
+
+    $ fab -H server anonymous
+
 ---
 
 # Fabric 1.0 (2011-03)
 
-* Interactivity
-* put/get: sudo capable, globbing, file-like objs
+---
+
+# Interactivity
+
+How to show this? hrm
+
+---
+
+# Sudo-capable `put`
+
+    put('foo', '/etc/apache2/sites-available/blah.conf', use_sudo=True)
+
+---
+
+# `put`/`get` globbing
+
+    get('/srv/django/myproject/log/*.log', 'log_backups')
+
+---
+
+# File-like objects in `put`/`get`
+
+    put(StringIO("127.0.0.1    server.com"), "/etc/hosts")
 
 ---
 
@@ -160,8 +194,44 @@ Execution:
 
 # Fabric 1.1 (2011-06)
 
-* namespaces, @task
-* exclude\_hosts
+---
+
+# @task
+
+    # This shows up in fab --list and may be called
+    @task
+    def foo():
+        pass
+
+    # This doesn't
+    def helper():
+        pass
+
+---
+
+# Namespaces
+
+`submodule.py`:
+
+    @task
+    def subtask():
+        pass
+
+`fabfile.py`:
+
+    import submodule
+
+    @task
+    def maintask():
+        pass
+
+Result:
+
+    $ fab --list
+    Available commands:
+
+        maintask
+        submodule.subtask
 
 ---
 
