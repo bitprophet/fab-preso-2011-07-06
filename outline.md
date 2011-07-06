@@ -147,16 +147,18 @@ Execution:
 
 Running the following:
 
-    $ fab -H server -- rm /srv/rails/myapp/current/log/production.log
+    $ fab -R webservers -- tail /var/log/apache2/access.log
 
 is directly equivalent to:
 
     def anonymous():
-        run("rm /srv/rails/myapp/current/log/production.log")
+        run("tail /var/log/apache2/access.log")
 
 followed by:
 
-    $ fab -H server anonymous
+    $ fab -R webservers anonymous
+
+No need for your own "one-off commands" task!
 
 ---
 
@@ -166,24 +168,49 @@ followed by:
 
 # Interactivity
 
-How to show this? hrm
+    $ fab -H code -- sudo -u postgres psql redmine
+    [code] Executing task '<remainder>'
+    [code] run: sudo -u postgres psql redmine
+    [code] out: [sudo] password for jforcier:
+    [code] out: Welcome to psql 8.3.8, the PostgreSQL interactive terminal
+    [code] out:
+    [code] out: redmine=# select subject from issues limit 5;
+    [code] out:                    subject                    
+    [code] out: ----------------------------------------------
+    [code] out:  SSH key forwarding
+    [code] out:  Make use of ssh_config where possible        
+    [code] out:  Add timeout support
+    [code] out:  Failover between IPv4/IPv6?
+    [code] out:  Retry support for put, run, sudo
+    [code] out: (5 rows)
+    [code] out:
+    [code] out: redmine=# \q
+    [code] out:
+
+    Done.
+    Disconnecting from code... done.
 
 ---
 
-# Sudo-capable `put`
+# `put`/`get` enhancements
 
-    put('foo', '/etc/apache2/sites-available/blah.conf', use_sudo=True)
+## Sudo-capable `put`
 
----
+    !python
+    put('apache2.conf', '/etc/apache2/', use_sudo=True)
 
-# `put`/`get` globbing
+<div style="height: 20px;"></div>
 
-    get('/srv/django/myproject/log/*.log', 'log_backups')
+## Globbing
 
----
+    !python
+    get('/var/log/apache2/*.log', 'log_backups/')
 
-# File-like objects in `put`/`get`
+<div style="height: 20px;"></div>
 
+## File-like objects on the local end
+
+    !python
     put(StringIO("127.0.0.1    server.com"), "/etc/hosts")
 
 ---
@@ -198,12 +225,13 @@ How to show this? hrm
 
 # @task
 
+    !python
     # This shows up in fab --list and may be called
     @task
     def foo():
         pass
 
-    # This doesn't
+    # This doesn't/can't
     def helper():
         pass
 
@@ -213,12 +241,14 @@ How to show this? hrm
 
 `submodule.py`:
 
+    !python
     @task
     def subtask():
         pass
 
 `fabfile.py`:
 
+    !python
     import submodule
 
     @task
@@ -243,15 +273,57 @@ Result:
 
 ---
 
-# Namespace/task improvements
+# Namespace/task improvements (probably 1.2)
 
-* Aliases
-* Default tasks
-* Specify wrapper class in @task
+---
+
+# Aliases 
+
+Possible `fabfile.py` API:
+
+    !python
+    @task(alias="lt")
+    def long_descriptive_task_name():
+        pass
+
+Possible result:
+
+    $ fab --list
+    Available commands:
+
+        long_descriptive_task_name
+        lt
+
+---
+
+# Default tasks
+
+Possible `deploy.py` API:
+
+    !python
+    @task(default=True)
+    def deploy_and_migrate():
+        # deploy code
+        # migrate database
+        # etc
+
+`fabfile.py`:
+
+    !python
+    import deploy
+
+Possible result:
+
+    $ fab --list
+    Available commands:
+
+        deploy # "fab deploy" now a valid invocation
+        deploy.deploy_and_migrate # Same as just calling "fab deploy"
 
 ---
 
 # Parallel execution, logging & UI
+## (probably 1.3)
 
 * Morgan's multiprocessing branch
 * Logging
@@ -261,11 +333,26 @@ Result:
 ---
 
 # Better SSH & networking behavior
+## (possibly 1.4)
 
 * Skip over unreachable hosts
 * Timeout control
 * ProxyCommand support via paraproxy
 * ssh to localhost => local()
+
+---
+
+# ALL THE THINGS
+
+Including the previous, our tracker currently has:
+
+* 60 open bug reports
+* 70 open feature requests
+* 28 open "support" todo items
+
+The Github repository has 133 forks and over 700 watchers (!).
+
+We're moving development entirely to Github soon.
 
 ---
 
@@ -281,6 +368,6 @@ Result:
 ## Contact
 
 * **Email:** `jeff@bitprophet.org`
-* **Google+:** `bitprophet@gmail.com`
+* **Google+:** `http://gplus.to/bitprophet`
 * **Twitter:** `@bitprophet`
 * **Web:** `http://bitprophet.org`
