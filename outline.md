@@ -326,23 +326,23 @@ Possible result:
 ## (probably 1.3)
 
 * Morgan's multiprocessing branch
-* Logging
+* Integration with a logging module
 * Prefix customization
-* Colorizing output by default
+* Colorized output by default
 
 ---
 
 # Better SSH & networking behavior
 ## (possibly 1.4)
 
-* Skip over unreachable hosts
+* Option to skip over unreachable/bad hosts
 * Timeout control
 * ProxyCommand support via paraproxy
-* ssh to localhost => local()
+* Option to detect SSH to localhost & replace with `local()`
 
 ---
 
-# ALL THE THINGS
+# Much more
 
 Including the previous, our tracker currently has:
 
